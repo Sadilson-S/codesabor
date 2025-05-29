@@ -77,25 +77,9 @@ const LeisureSection: React.FC = () => {
             ))}
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
-            <div className="bg-gray-800 p-6 rounded-xl text-center">
-              <Trophy className="w-12 h-12 text-yellow-400 mx-auto mb-4" />
-              <h3 className="text-xl font-bold mb-2">Campeonatos</h3>
-              <p className="text-gray-400">Participe dos nossos torneios semanais</p>
-            </div>
+        
             
-            <div className="bg-gray-800 p-6 rounded-xl text-center">
-              <Sparkles className="w-12 h-12 text-purple-400 mx-auto mb-4" />
-              <h3 className="text-xl font-bold mb-2">Setup Premium</h3>
-              <p className="text-gray-400">PS4 e PS5</p>
-            </div>
             
-            <div className="bg-gray-800 p-6 rounded-xl text-center">
-              <Users className="w-12 h-12 text-blue-400 mx-auto mb-4" />
-              <h3 className="text-xl font-bold mb-2">Multiplayer</h3>
-              <p className="text-gray-400">Jogue com seus amigos</p>
-            </div>
-          </div>
 
           <div className="bg-gradient-to-r from-purple-600 to-orange-500 rounded-xl p-8 text-center">
             <h3 className="text-2xl font-bold mb-4">Venha se Divertir!</h3>
