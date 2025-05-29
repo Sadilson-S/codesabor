@@ -1,12 +1,24 @@
 [build]
   command = "npm run build"
   publish = "dist"
+  ignore = "false"  # Force build even when files haven't changed
+
+# Environment variables
+[build.environment]
+  VITE_SUPABASE_URL = "https://hyfiubkfwkviactciqff.supabase.co"
+  VITE_SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imh5Zml1Ymtmd2t2aWFjdGNpcWZmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDg0ODA0MDcsImV4cCI6MjA2NDA1NjQwN30.j3vQCo_-i89Db_FU2IDiZ5Smm_YdpRr66XXZOFKigYQ"
 
 # Handle SPA routing
 [[redirects]]
   from = "/*"
   to = "/index.html"
   status = 200
+
+# Cache control for assets
+[[headers]]
+  for = "/assets/*"
+  [headers.values]
+    Cache-Control = "public, max-age=0, must-revalidate"
 
 # Asset headers
 [[headers]]
