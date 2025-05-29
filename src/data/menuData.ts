@@ -48,7 +48,7 @@ export const menuItems: MenuItem[] = [
     name: 'SQLBURGER (Hambúrguer de frango)',
     description: 'Hambúrguer especial feito com frango grelhado',
     price: 2300,
-    image: 'https://images.pexels.com/photos/2983101/pexels-photo-2983101.jpeg?auto=compress&cs=tinysrgb&w=600',
+    image: 'https://conteudo.imguol.com.br/c/entretenimento/26/2020/10/06/hambuguer-de-frango---churrasqueadas-1602015731299_v2_1920x1080.jpg',
     category: 'fastfood'
   },
   {
@@ -64,7 +64,7 @@ export const menuItems: MenuItem[] = [
     name: 'Fahita',
     description: 'Fahita tradicional com carne e legumes',
     price: 1800,
-    image: 'https://images.pexels.com/photos/2233729/pexels-photo-2233729.jpeg?auto=compress&cs=tinysrgb&w=600',
+    image: 'https://i.ytimg.com/vi/MHfMUjvG8Uo/hq720.jpg?sqp=-oaymwEhCK4FEIIDSFryq4qpAxMIARUAAAAAGAElAADIQj0AgKJD&rs=AOn4CLChirWFrFRXVoAN50pjNi1erywlrQ',
     category: 'fastfood'
   },
   {
@@ -114,7 +114,7 @@ export const menuItems: MenuItem[] = [
     name: 'Fahita + batatas recheadas + bebida (Flexis agoura)',
     description: 'Combo com fahita, batatas recheadas e bebida',
     price: 3000,
-    image: 'https://images.pexels.com/photos/2233729/pexels-photo-2233729.jpeg?auto=compress&cs=tinysrgb&w=600',
+    image: 'https://baytna-express.com/wp-content/uploads/2023/11/%D8%A8%D8%B7%D8%A7%D8%B7%D8%A7-2.jpg',
     category: 'combos'
   },
   
@@ -168,7 +168,7 @@ export const menuItems: MenuItem[] = [
     name: 'Sumo de ananás com hortelã',
     description: 'Suco natural de abacaxi com hortelã',
     price: 600,
-    image: 'https://images.pexels.com/photos/338713/pexels-photo-338713.jpeg?auto=compress&cs=tinysrgb&w=600',
+    image: 'https://www.comidaereceitas.com.br/wp-content/uploads/2019/11/frozen_abacaxi.jpg',
     category: 'bebidas'
   },
   {
@@ -184,7 +184,7 @@ export const menuItems: MenuItem[] = [
     name: 'Sumo de maracujá com Pitaia',
     description: 'Suco natural de maracujá com pitaia',
     price: 600,
-    image: 'https://images.pexels.com/photos/338713/pexels-photo-338713.jpeg?auto=compress&cs=tinysrgb&w=600',
+    image: 'https://www.comidaereceitas.com.br/wp-content/uploads/2024/02/agua-fresca-de-pithaya-bebida-mexicana-de-fruta-do-dragao-780x520.jpg',
     category: 'bebidas'
   },
   {
@@ -210,7 +210,7 @@ export const menuItems: MenuItem[] = [
     name: 'Bolo no pote',
     description: 'Delicioso bolo servido no pote',
     price: 1200,
-    image: 'https://images.pexels.com/photos/2373520/pexels-photo-2373520.jpeg?auto=compress&cs=tinysrgb&w=600',
+    image: 'https://static.itdg.com.br/images/1200-675/bfbc5532e36840b2a57e3849d82ad7a5/355179-original.jpg',
     category: 'doces'
   },
   {
@@ -218,7 +218,7 @@ export const menuItems: MenuItem[] = [
     name: 'Mini Churros',
     description: 'Mini churros com doce de leite',
     price: 100,
-    image: 'https://images.pexels.com/photos/2373520/pexels-photo-2373520.jpeg?auto=compress&cs=tinysrgb&w=600',
+    image: 'https://www.zulaykitchen.com/cdn/shop/articles/Best_Ever_Mini_Churros_Recipe_Easy_to_Make_Impossible_to_Resist_d42d4ca8-9252-4107-bbfb-7d3907d67f49.jpg?v=1743092939',
     category: 'doces'
   },
   {
@@ -226,7 +226,7 @@ export const menuItems: MenuItem[] = [
     name: 'Gelado (copo)',
     description: 'Sorvete servido em copo',
     price: 500,
-    image: 'https://images.pexels.com/photos/2373520/pexels-photo-2373520.jpeg?auto=compress&cs=tinysrgb&w=600',
+    image: 'https://img.cdndsgni.com/preview/10068842.jpg',
     category: 'doces'
   },
   {
@@ -234,7 +234,7 @@ export const menuItems: MenuItem[] = [
     name: 'Pipoca de leite',
     description: 'Pipoca doce caramelizada',
     price: 250,
-    image: 'https://images.pexels.com/photos/2373520/pexels-photo-2373520.jpeg?auto=compress&cs=tinysrgb&w=600',
+    image: 'https://www.receitasnestle.com.br/sites/default/files/srh_recipes/903a823e1c538a3f97f881c8f1a2984d.jpg',
     category: 'doces'
   },
   {
@@ -242,7 +242,7 @@ export const menuItems: MenuItem[] = [
     name: 'Algodão doce',
     description: 'Tradicional algodão doce',
     price: 300,
-    image: 'https://images.pexels.com/photos/2373520/pexels-photo-2373520.jpeg?auto=compress&cs=tinysrgb&w=600',
+    image: 'https://receitasdepesos.com.br/wp-content/uploads/2022/12/02-1-1024x683.png',
     category: 'doces'
   },
   {
@@ -250,7 +250,7 @@ export const menuItems: MenuItem[] = [
     name: 'Crepes (Nutella & banana/ doce de leite)',
     description: 'Crepes doces com recheios à escolha',
     price: 1000,
-    image: 'https://images.pexels.com/photos/2373520/pexels-photo-2373520.jpeg?auto=compress&cs=tinysrgb&w=600',
+    image: 'https://panelaterapia.com/wp-content/uploads/2015/04/crepeblog.jpg',
     category: 'doces'
   },
   
@@ -260,7 +260,7 @@ export const menuItems: MenuItem[] = [
     name: 'Paracuca',
     description: 'Tradicional paracuca',
     price: 150,
-    image: 'https://images.pexels.com/photos/2338407/pexels-photo-2338407.jpeg?auto=compress&cs=tinysrgb&w=600',
+    image: 'https://kitutestialaura.com/wp-content/uploads/2021/10/24.jpeg',
     category: 'quitutes'
   },
   {
@@ -268,15 +268,15 @@ export const menuItems: MenuItem[] = [
     name: 'Banana chips',
     description: 'Chips crocantes de banana',
     price: 250,
-    image: 'https://images.pexels.com/photos/2338407/pexels-photo-2338407.jpeg?auto=compress&cs=tinysrgb&w=600',
+    image: 'https://images.squarespace-cdn.com/content/v1/64cac30360ce1e5017ca5dcc/1691012309469-FKDAJFU8ADA7ANUPGRS1/IMG_9258.jpg',
     category: 'quitutes'
   },
   {
     id: 'quitute-3',
-    name: 'Ovo fervido',
+    name: 'Ovo fervido com jindungo',
     description: 'Ovo cozido temperado',
     price: 250,
-    image: 'https://images.pexels.com/photos/2338407/pexels-photo-2338407.jpeg?auto=compress&cs=tinysrgb&w=600',
+    image: 'https://static.itdg.com.br/images/640-auto/e12f1db54dfb74bd650f8ae998d5bc1d/shutterstock-739744978.jpg',
     category: 'quitutes'
   },
   {
@@ -284,7 +284,7 @@ export const menuItems: MenuItem[] = [
     name: 'Pé de moleque',
     description: 'Tradicional doce de amendoim',
     price: 100,
-    image: 'https://images.pexels.com/photos/2338407/pexels-photo-2338407.jpeg?auto=compress&cs=tinysrgb&w=600',
+    image: 'https://vovopalmirinha.com.br/wp-content/uploads/2016/06/pe-de-moleque-1.jpg',
     category: 'quitutes'
   },
   {

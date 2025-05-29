@@ -217,6 +217,20 @@ export const TournamentProvider: React.FC<{ children: React.ReactNode }> = ({ ch
 
   const getRemainingSpots = (tournamentId: string) => {
     const count = getInscriptionCount(tournamentId);
+    
+    // Find the tournament to check its game
+    const tournament = tournaments.find(t => t.id === tournamentId);
+    
+    // Set limit of 13 inscriptions for specific games
+    if (tournament && [
+      'TEKKEN 7',
+      'Naruto Storm 4',
+      'Mortal Kombat 11'
+    ].includes(tournament.jogo)) {
+      return Math.max(0, 13 - count);
+    }
+    
+    // Default limit of 20 for other games
     return Math.max(0, 20 - count);
   };
 

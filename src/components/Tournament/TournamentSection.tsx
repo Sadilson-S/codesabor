@@ -103,18 +103,27 @@ const TournamentSection: React.FC = () => {
                     key={tournament.id}
                     className="bg-gray-700 rounded-lg overflow-hidden shadow-lg transform hover:scale-105 transition-transform duration-300"
                   >
-                    <div className="h-48 overflow-hidden">
+                    <div className="h-48 overflow-hidden relative">
                       <img
                         src={gameImage}
                         alt={tournament.jogo}
                         className="w-full h-full object-cover"
                       />
+                      <div className="absolute top-2 right-2 bg-black bg-opacity-70 text-white text-xs font-bold px-2 py-1 rounded">
+                        {tournament.jogo === 'TEKKEN 7' ? 'PS4' : 'PS4 & PS5'}
+                      </div>
                     </div>
                     <div className="p-4">
                       <h3 className="text-xl font-bold text-white mb-2">{tournament.jogo}</h3>
                       <p className="text-sm text-gray-400 mb-2">Edição {tournament.edicao}</p>
                       
-                      <p className="text-orange-400 font-bold mb-2">Inscrição 2.350 Kz</p>
+                      <p className="text-orange-400 font-bold mb-2">Inscrição {['TEKKEN 7', 'Naruto Storm 4', 'Mortal Kombat 11'].includes(tournament.jogo) ? '2.250 Kz' : '2.350 Kz'}</p>
+                      
+                      <p className="text-green-400 font-bold mb-2">
+                        Premiação: {['TEKKEN 7', 'Naruto Storm 4', 'Mortal Kombat 11'].includes(tournament.jogo) 
+                          ? '10.000 Kz' 
+                          : '15.000 Kz + comida na bancada'}
+                      </p>
                       
                       {isFull ? (
                         <div className="flex items-center text-red-400 mb-3">

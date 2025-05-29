@@ -80,11 +80,11 @@ const TournamentModal: React.FC<TournamentModalProps> = ({ isOpen, onClose, tour
         setIsSubmitting(false);
       }
     } else {
-      // For waitlist, open WhatsApp with a message
+      // For waitlist, open WhatsApp with the game information in the message
       const message = encodeURIComponent(
         `Olá! Quero ser avisado quando o campeonato de ${gameName} estiver disponível novamente.`
       );
-      window.open(`https://wa.me/5511999999999?text=${message}`, '_blank');
+      window.open(`https://wa.me/244950949098?text=${message}`, '_blank');
       onClose();
     }
   };
