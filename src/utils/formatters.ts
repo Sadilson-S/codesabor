@@ -1,6 +1,8 @@
 export const formatCurrency = (value: number): string => {
-  return new Intl.NumberFormat('pt-BR', {
+  // Format as Angolan Kwanza (Kz)
+  return new Intl.NumberFormat('pt-AO', {
     style: 'currency',
-    currency: 'BRL',
-  }).format(value);
+    currency: 'AOA',
+    currencyDisplay: 'symbol',
+  }).format(value).replace('AOA', 'Kz');
 };

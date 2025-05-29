@@ -166,7 +166,7 @@ const TournamentModal: React.FC<TournamentModalProps> = ({ isOpen, onClose, tour
                       value={whatsapp}
                       onChange={(e) => setWhatsapp(e.target.value)}
                       className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
-                      placeholder="Ex: (11) 99999-9999"
+                      placeholder="Ex: 945390490"
                       required
                     />
                   </div>
