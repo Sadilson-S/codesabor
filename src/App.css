@@ -11,24 +11,46 @@
   animation: slide-in 0.3s ease-out;
 }
 
-.categories-scrollbar::-webkit-scrollbar {
-  height: 6px;
+/* Custom scrollbar for desktop */
+@media (min-width: 768px) {
+  .categories-scrollbar::-webkit-scrollbar {
+    height: 6px;
+  }
+
+  .categories-scrollbar::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 3px;
+  }
+
+  .categories-scrollbar::-webkit-scrollbar-thumb {
+    background: #d1d5db;
+    border-radius: 3px;
+  }
+
+  .categories-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: #a3a3a3;
+  }
 }
 
-.categories-scrollbar::-webkit-scrollbar-track {
-  background: #f1f1f1;
-  border-radius: 3px;
+/* Hide scrollbar on mobile devices */
+.hide-scrollbar {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
 }
 
-.categories-scrollbar::-webkit-scrollbar-thumb {
-  background: #d1d5db;
-  border-radius: 3px;
-}
-
-.categories-scrollbar::-webkit-scrollbar-thumb:hover {
-  background: #a3a3a3;
+.hide-scrollbar::-webkit-scrollbar {
+  display: none; /* Chrome, Safari and Opera */
 }
 
 html {
   scroll-behavior: smooth;
+}
+
+/* Improve mobile responsiveness */
+@media (max-width: 640px) {
+  .container {
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+    width: 100%;
+  }
 }

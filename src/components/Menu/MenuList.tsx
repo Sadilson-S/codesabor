@@ -47,24 +47,26 @@ const MenuList: React.FC = () => {
       <h2 className="text-3xl font-bold text-center mb-8 text-gray-800">Nosso Cardápio</h2>
       
       {/* Categories */}
-      <div className="flex overflow-x-auto pb-4 mb-8 categories-scrollbar">
-        <div className="flex space-x-2 md:space-x-4 mx-auto">
-          {categories.map(category => (
-            <button
-              key={category.id}
-              onClick={() => handleCategoryClick(category.id)}
-              className={`flex flex-col items-center px-4 py-2 rounded-full whitespace-nowrap transition-colors ${
-                activeCategory === category.id
-                  ? 'bg-orange-500 text-white'
-                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-              }`}
-            >
-              <span className="flex items-center">
-                {getIconByName(category.icon)}
-                <span className="ml-2 font-medium">{category.name}</span>
-              </span>
-            </button>
-          ))}
+      <div className="sticky top-16 z-10 bg-white py-2 shadow-md mb-8">
+        <div className="flex overflow-x-auto pb-2 categories-scrollbar hide-scrollbar">
+          <div className="flex space-x-2 px-2 mx-auto">
+            {categories.map(category => (
+              <button
+                key={category.id}
+                onClick={() => handleCategoryClick(category.id)}
+                className={`flex items-center px-3 py-2 rounded-full whitespace-nowrap transition-colors text-sm md:text-base ${
+                  activeCategory === category.id
+                    ? 'bg-orange-500 text-white'
+                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                }`}
+              >
+                <span className="flex items-center">
+                  {getIconByName(category.icon)}
+                  <span className="ml-1 md:ml-2 font-medium">{category.name}</span>
+                </span>
+              </button>
+            ))}
+          </div>
         </div>
       </div>
       
@@ -76,7 +78,7 @@ const MenuList: React.FC = () => {
           className={`mb-12 scroll-mt-24`}
         >
           <h3 className="text-2xl font-semibold mb-6 text-gray-800">{category.name}</h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
             {filteredItems[category.id].map(item => (
               <MenuItem key={item.id} item={item} />
             ))}
