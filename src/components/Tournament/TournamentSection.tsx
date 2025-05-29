@@ -10,11 +10,17 @@ import { useAuth } from '../../contexts/AuthContext';
 // Game interface is no longer needed as we're using tournament data directly
 
 const TournamentSection: React.FC = () => {
-  const { activeTournaments, getRemainingSpots, isAdmin, dbError } = useTournament();
+  const { activeTournaments, getRemainingSpots, isAdmin, dbError, fetchTournaments } = useTournament();
   const { user } = useAuth();
   const [selectedTournament, setSelectedTournament] = useState<{id: string, game: string, image: string} | null>(null);
   const [modalType, setModalType] = useState<'register' | 'waitlist'>('register');
   const [isModalOpen, setIsModalOpen] = useState(false);
+  
+  // Fetch tournaments only once on component mount
+  React.useEffect(() => {
+    // Initial fetch - no debug logs to reduce console noise
+    fetchTournaments();
+  }, []);
 
   // Map game names to their images for display
   const gameImages: Record<string, string> = {

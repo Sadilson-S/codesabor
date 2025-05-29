@@ -19,9 +19,17 @@ const TournamentAdminPanel: React.FC = () => {
   const [showPlayerList, setShowPlayerList] = useState(false);
   const [processingId, setProcessingId] = useState<string | null>(null);
   
-  // Fetch tournaments on component mount
+  // Fetch tournaments only once on component mount
   React.useEffect(() => {
+    console.log('TournamentAdminPanel mounted - fetching tournaments');
+    
+    // Initial fetch - no auto-refresh to prevent excessive API calls
     fetchTournaments();
+    
+    // Cleanup function
+    return () => {
+      console.log('TournamentAdminPanel unmounted');
+    };
   }, []);
 
   const handleViewInscriptions = async (tournamentId: string) => {
@@ -58,7 +66,7 @@ const TournamentAdminPanel: React.FC = () => {
   };
 
   const handleDeleteTournament = async (tournamentId: string) => {
-    if (!window.confirm('Tem certeza que deseja DELETAR este campeonato? Esta ação não pode ser desfeita.')) {
+    if (!window.confirm('Tem certeza que deseja EXCLUIR este campeonato? Esta ação não pode ser desfeita.')) {
       return;
     }
     
@@ -66,58 +74,47 @@ const TournamentAdminPanel: React.FC = () => {
     setLoading(true);
     
     try {
-      // Use a completely different approach with the Supabase client
-      // First, get the current tournament to confirm it exists
-      const { data: tournament } = await supabase
-        .from('campeonatos')
-        .select('id, jogo')
-        .eq('id', tournamentId)
-        .single();
-        
-      if (!tournament) {
-        throw new Error('Campeonato não encontrado');
-      }
+      console.log(`Deleting tournament ${tournamentId} and its inscriptions`);
       
-      console.log(`Deleting tournament: ${tournament.jogo} (${tournamentId})`);
-      
-      // First delete all inscriptions
-      const { error: inscriptionsError } = await supabase
+      // First, delete all inscriptions for this tournament
+      const { error: inscriptionError } = await supabase
         .from('inscricoes')
         .delete()
         .eq('campeonato_id', tournamentId);
-        
-      if (inscriptionsError) {
-        console.error('Error deleting inscriptions:', inscriptionsError);
-        throw inscriptionsError;
+      
+      if (inscriptionError) {
+        console.error('Error deleting inscriptions:', inscriptionError);
+        alert('Erro ao excluir inscrições do campeonato');
+        setProcessingId(null);
+        return;
       }
       
-      // Then delete the tournament
+      console.log('Inscriptions deleted successfully, now deleting tournament');
+      
+      // Then delete the tournament itself
       const { error: tournamentError } = await supabase
         .from('campeonatos')
         .delete()
         .eq('id', tournamentId);
-        
+      
       if (tournamentError) {
         console.error('Error deleting tournament:', tournamentError);
-        throw tournamentError;
+        alert('Erro ao excluir campeonato');
+        setProcessingId(null);
+        return;
       }
       
-      console.log('Tournament deletion successful');
-      alert('Campeonato deletado com sucesso!');
+      console.log('Tournament deleted successfully');
+      alert('Campeonato excluído com sucesso!');
       
-      // Manually update the local state
-      if (selectedTournamentId === tournamentId) {
-        setPlayerList([]);
-        setShowPlayerList(false);
-      }
-      
-      // Force a hard reload of the page
-      window.location.href = window.location.href;
+      // Force a refresh of the data
+      setTimeout(() => {
+        fetchTournaments();
+      }, 500);
     } catch (error) {
-      console.error('Exception when deleting tournament:', error);
-      alert('Erro ao deletar campeonato. Tente novamente.');
+      console.error('Error in delete process:', error);
+      alert('Erro ao processar exclusão');
     } finally {
-      setLoading(false);
       setProcessingId(null);
     }
   };
@@ -253,7 +250,7 @@ const TournamentAdminPanel: React.FC = () => {
                               <button
                                 onClick={() => handleDeleteTournament(tournament.id)}
                                 className="bg-red-600 hover:bg-red-700 text-white p-2 rounded"
-                                title="Deletar campeonato"
+                                title="Excluir campeonato"
                                 disabled={isProcessing}
                               >
                                 <Trash2 size={16} className={isProcessing ? 'animate-pulse' : ''} />

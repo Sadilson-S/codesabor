@@ -31,6 +31,7 @@ const Header: React.FC<HeaderProps> = ({ scrollToSection }) => {
       }`}
     >
       <div className="container mx-auto px-4 flex justify-between items-center">
+        {/* Logo */}
         <div className="flex items-center">
           <h1 className={`text-2xl font-bold ${isScrolled ? 'text-orange-500' : 'text-white'}`}>
             Code
@@ -43,34 +44,39 @@ const Header: React.FC<HeaderProps> = ({ scrollToSection }) => {
           </h1>
         </div>
         
-        <nav className="hidden md:flex items-center space-x-8">
-          <button 
-            onClick={() => scrollToSection('menu')}
-            className={`font-medium transition-colors ${
-              isScrolled ? 'text-gray-700 hover:text-orange-500' : 'text-white hover:text-orange-300'
-            }`}
-          >
-            Cardápio
-          </button>
-          <button 
-            onClick={() => scrollToSection('leisure')}
-            className={`font-medium transition-colors ${
-              isScrolled ? 'text-gray-700 hover:text-orange-500' : 'text-white hover:text-orange-300'
-            }`}
-          >
-            Área de Jogos
-          </button>
-          
-          {/* Admin Login Button */}
-          <button
-            onClick={() => scrollToSection('tournaments')}
-            className={`font-medium transition-colors ${
-              isScrolled ? 'text-gray-700 hover:text-orange-500' : 'text-white hover:text-orange-300'
-            }`}
-          >
-            Campeonatos
-          </button>
-          
+        {/* Centered Navigation */}
+        <div className="hidden md:block absolute left-1/2 transform -translate-x-1/2">
+          <nav className="flex items-center space-x-8">
+            <button 
+              onClick={() => scrollToSection('menu')}
+              className={`font-medium transition-colors ${
+                isScrolled ? 'text-gray-700 hover:text-orange-500' : 'text-white hover:text-orange-300'
+              }`}
+            >
+              Cardápio
+            </button>
+            <button 
+              onClick={() => scrollToSection('leisure')}
+              className={`font-medium transition-colors ${
+                isScrolled ? 'text-gray-700 hover:text-orange-500' : 'text-white hover:text-orange-300'
+              }`}
+            >
+              Área de Jogos
+            </button>
+            
+            <button
+              onClick={() => scrollToSection('tournaments')}
+              className={`font-medium transition-colors ${
+                isScrolled ? 'text-gray-700 hover:text-orange-500' : 'text-white hover:text-orange-300'
+              }`}
+            >
+              Campeonatos
+            </button>
+          </nav>
+        </div>
+        
+        {/* Admin/User Button */}
+        <div>
           {user ? (
             <button
               onClick={signOut}
@@ -92,7 +98,7 @@ const Header: React.FC<HeaderProps> = ({ scrollToSection }) => {
               Admin
             </button>
           )}
-        </nav>
+        </div>
         
         <div className="md:hidden flex items-center">
           <button 

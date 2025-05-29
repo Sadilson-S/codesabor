@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { X } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { useTournament } from '../../contexts/TournamentContext';
-import { supabase } from '../../lib/supabase';
 
 interface TournamentModalProps {
   isOpen: boolean;
@@ -14,7 +13,7 @@ interface TournamentModalProps {
 }
 
 const TournamentModal: React.FC<TournamentModalProps> = ({ isOpen, onClose, tournamentId, gameName, gameImage, type }) => {
-  const { getRemainingSpots } = useTournament();
+  const { getRemainingSpots, registerPlayer, fetchTournaments } = useTournament();
   const [name, setName] = useState('');
   const [whatsapp, setWhatsapp] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -47,42 +46,22 @@ const TournamentModal: React.FC<TournamentModalProps> = ({ isOpen, onClose, tour
       setIsSubmitting(true);
       console.log('Processing registration for tournament:', tournamentId);
       
-      // Check if the user has already registered for this tournament
       try {
-        // First, check if this WhatsApp number is already registered for this tournament
-        const { data: existingRegistrations, error: checkError } = await supabase
-          .from('inscricoes')
-          .select('id')
-          .eq('campeonato_id', tournamentId)
-          .eq('numero_whatsapp', formattedWhatsapp);
-          
-        if (checkError) {
-          console.error('Error checking existing registrations:', checkError);
-          alert('Erro ao verificar inscrições existentes');
-          setIsSubmitting(false);
-          return;
-        }
+        // Use the registerPlayer function from TournamentContext instead of direct Supabase calls
+        const { success, error } = await registerPlayer(tournamentId, name, formattedWhatsapp);
         
-        // If the user is already registered, show an error
-        if (existingRegistrations && existingRegistrations.length > 0) {
-          console.log('User already registered for this tournament');
-          alert('Você já está inscrito neste campeonato!');
-          setIsSubmitting(false);
-          return;
-        }
-        
-        // If not registered, proceed with registration
-        const { error } = await supabase
-          .from('inscricoes')
-          .insert({
-            nome_completo: name,
-            numero_whatsapp: formattedWhatsapp,
-            campeonato_id: tournamentId
-          });
-        
-        if (error) {
+        if (!success) {
           console.error('Registration error:', error);
-          alert('Erro ao realizar inscrição: ' + error.message);
+          
+          // Show appropriate error message based on the error
+          if (error === 'Você já está inscrito neste campeonato') {
+            alert('Você já está inscrito neste campeonato!');
+          } else if (error === 'Campeonato lotado') {
+            alert('Este campeonato já está lotado!');
+          } else {
+            alert(`Erro ao realizar inscrição: ${error}`);
+          }
+          
           setIsSubmitting(false);
           return;
         }
@@ -90,6 +69,11 @@ const TournamentModal: React.FC<TournamentModalProps> = ({ isOpen, onClose, tour
         // Success - no page reload needed
         toast.success('Inscrição realizada com sucesso!');
         setRegistrationSuccess(true);
+        
+        // Update the remaining spots display
+        setTimeout(() => {
+          fetchTournaments();
+        }, 500);
       } catch (error) {
         console.error('Exception during registration:', error);
         alert('Erro ao processar inscrição. Tente novamente.');

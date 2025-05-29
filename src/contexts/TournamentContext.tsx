@@ -1,7 +1,6 @@
 import React, { createContext, useContext, useState } from 'react';
 import { supabase } from '../lib/supabase';
 import { useAuth } from './AuthContext';
-import toast from 'react-hot-toast';
 
 export interface Tournament {
   id: string;
@@ -34,6 +33,7 @@ interface TournamentContextType {
   dbError: string | null;
   fetchTournaments: () => Promise<void>;
   fetchInscriptions: (tournamentId: string) => Promise<Inscription[]>;
+  fetchAllInscriptions: () => Promise<void>;
   registerPlayer: (tournamentId: string, name: string, whatsapp: string) => Promise<{ success: boolean; error?: any }>;
   resetTournament: (tournamentId: string) => Promise<{ success: boolean; error?: any }>;
   deleteTournament: (tournamentId: string) => Promise<{ success: boolean; error?: any }>;
@@ -57,85 +57,107 @@ export const TournamentProvider: React.FC<{ children: React.ReactNode }> = ({ ch
 
   // Get only the most recent active tournament for each game
   const activeTournaments = React.useMemo(() => {
+    console.log('Calculating active tournaments from:', tournaments);
+    
+    // Filter active tournaments
+    const activeTournamentsList = tournaments.filter(t => t.status === 'ativo');
+    console.log('Filtered active tournaments:', activeTournamentsList);
+    
     const gameMap = new Map<string, Tournament>();
     
     // For each game, keep only the tournament with the highest edition number
-    tournaments
-      .filter(t => t.status === 'ativo')
-      .forEach(tournament => {
-        const existingTournament = gameMap.get(tournament.jogo);
-        if (!existingTournament || tournament.edicao > existingTournament.edicao) {
-          gameMap.set(tournament.jogo, tournament);
-        }
-      });
+    activeTournamentsList.forEach(tournament => {
+      const existingTournament = gameMap.get(tournament.jogo);
+      if (!existingTournament || tournament.edicao > existingTournament.edicao) {
+        gameMap.set(tournament.jogo, tournament);
+      }
+    });
     
-    return Array.from(gameMap.values());
+    const result = Array.from(gameMap.values());
+    console.log('Final active tournaments:', result);
+    return result;
   }, [tournaments]);
 
+  // Track the last fetch time to prevent excessive API calls
+  const lastFetchRef = React.useRef<number>(0);
+  const fetchThrottleMs = 5000; // Minimum 5 seconds between fetches
+  
+  // Enhanced tournament fetching with throttling to prevent ERR_INSUFFICIENT_RESOURCES
   const fetchTournaments = async () => {
-    setLoading(true);
-    setDbError(null);
+    // Check if we've fetched recently to prevent excessive API calls
+    const now = Date.now();
+    if (now - lastFetchRef.current < fetchThrottleMs) {
+      console.log('Skipping fetch - too soon since last fetch');
+      return;
+    }
+    
+    // Update last fetch time
+    lastFetchRef.current = now;
+    
     try {
-      // Log the query we're about to make
-      console.log('Fetching tournaments from Supabase');
+      // Only log in development, not in production
+      if (process.env.NODE_ENV !== 'production') {
+        console.log('Fetching tournaments from Supabase');
+      }
       
+      setLoading(true);
+      setDbError(null);
+      
+      // Get all tournaments from the database
       const { data, error } = await supabase
         .from('campeonatos')
         .select('*')
         .order('data_inicio', { ascending: false });
-        
-      console.log('Tournament query result:', { data, error });
-
+      
       if (error) {
-        // Check if the error is related to missing tables
-        if (error.code === '42P01') {
-          setDbError('As tabelas do banco de dados não existem. Por favor, configure o banco de dados Supabase.');
-          console.error('Database tables do not exist:', error);
-          setTournaments([]);
-          return;
-        }
-        throw error;
+        console.error('Error fetching tournaments:', error);
+        setDbError('Erro ao carregar os campeonatos');
+        return;
       }
       
-      setTournaments(data || []);
-      
-      // Fetch inscriptions for active tournaments
-      const activeTournamentIds = data
-        ?.filter(t => t.status === 'ativo')
-        .map(t => t.id) || [];
-      
-      for (const tournamentId of activeTournamentIds) {
-        await fetchInscriptionsForTournament(tournamentId);
+      if (!data || data.length === 0) {
+        setTournaments([]);
+        return;
       }
+      
+      // Update the state with the fetched tournaments
+      setTournaments(data);
+      
+      // Fetch inscriptions, but don't await to prevent blocking
+      fetchAllInscriptions().catch(err => {
+        console.error('Error fetching inscriptions:', err);
+      });
+      
     } catch (error) {
       console.error('Error fetching tournaments:', error);
-      toast.error('Erro ao carregar os campeonatos');
+      setDbError('Erro ao carregar os campeonatos');
     } finally {
       setLoading(false);
     }
   };
 
+  // Improved inscription fetching that updates state
   const fetchInscriptionsForTournament = async (tournamentId: string) => {
     try {
-      console.log('Fetching inscriptions for tournament:', tournamentId);
+      console.log(`Fetching inscriptions for tournament: ${tournamentId}`);
       
       const { data, error } = await supabase
         .from('inscricoes')
         .select('*')
         .eq('campeonato_id', tournamentId);
-
+      
       if (error) {
         console.error('Error fetching inscriptions:', error);
         return [];
       }
       
-      console.log(`Found ${data?.length || 0} inscriptions for tournament ${tournamentId}`);
+      console.log(`Found ${data?.length || 0} inscriptions for tournament ${tournamentId}:`, data);
       
-      // Update inscriptions state
+      // Update the inscriptions state with the new data
       setInscriptions(prev => {
-        // Remove existing inscriptions for this tournament
+        // Remove any existing inscriptions for this tournament
         const filtered = prev.filter(i => i.campeonato_id !== tournamentId);
-        // Add new inscriptions
+        // Add the new inscriptions
         return [...filtered, ...(data || [])];
       });
       
@@ -146,8 +168,47 @@ export const TournamentProvider: React.FC<{ children: React.ReactNode }> = ({ ch
     }
   };
 
+  // Fetch all inscriptions for a specific tournament
   const fetchInscriptions = async (tournamentId: string) => {
     return await fetchInscriptionsForTournament(tournamentId);
+  };
+  
+  // Track the last inscriptions fetch time
+  const lastInscriptionsFetchRef = React.useRef<number>(0);
+  const inscriptionsFetchThrottleMs = 8000; // Minimum 8 seconds between inscription fetches
+  
+  // Fetch all inscriptions for all tournaments with throttling
+  const fetchAllInscriptions = async () => {
+    // Check if we've fetched recently to prevent excessive API calls
+    const now = Date.now();
+    if (now - lastInscriptionsFetchRef.current < inscriptionsFetchThrottleMs) {
+      console.log('Skipping inscriptions fetch - too soon since last fetch');
+      return;
+    }
+    
+    // Update last fetch time
+    lastInscriptionsFetchRef.current = now;
+    
+    try {
+      // Only log in development
+      if (process.env.NODE_ENV !== 'production') {
+        console.log('Fetching inscriptions');
+      }
+      
+      const { data, error } = await supabase
+        .from('inscricoes')
+        .select('*');
+      
+      if (error) {
+        console.error('Error fetching inscriptions:', error);
+        return;
+      }
+      
+      // Update state with fetched inscriptions
+      setInscriptions(data || []);
+    } catch (error) {
+      console.error('Error fetching inscriptions:', error);
+    }
   };
 
   const getInscriptionCount = (tournamentId: string) => {
@@ -163,14 +224,54 @@ export const TournamentProvider: React.FC<{ children: React.ReactNode }> = ({ ch
     try {
       console.log('Attempting to register player for tournament:', tournamentId);
       
-      // Check if there are spots available
-      if (getRemainingSpots(tournamentId) <= 0) {
-        console.log('Tournament is full');
-        return { success: false, error: 'Campeonato lotado' };
+      // First, check if the tournament exists and is active
+      const { data: tournamentData, error: tournamentError } = await supabase
+        .from('campeonatos')
+        .select('*')
+        .eq('id', tournamentId)
+        .eq('status', 'ativo')
+        .single();
+      
+      if (tournamentError || !tournamentData) {
+        console.error('Tournament not found or not active:', tournamentError);
+        return { success: false, error: 'Campeonato não encontrado ou não está ativo' };
       }
       
       // Format WhatsApp number (remove non-digits)
       const formattedWhatsapp = whatsapp.replace(/\D/g, '');
+      
+      // Check if this WhatsApp number is already registered for this tournament
+      const { data: existingRegistrations, error: checkError } = await supabase
+        .from('inscricoes')
+        .select('id')
+        .eq('campeonato_id', tournamentId)
+        .eq('numero_whatsapp', formattedWhatsapp);
+      
+      if (checkError) {
+        console.error('Error checking existing registrations:', checkError);
+        return { success: false, error: 'Erro ao verificar inscrições existentes' };
+      }
+      
+      if (existingRegistrations && existingRegistrations.length > 0) {
+        console.log('Player already registered for this tournament');
+        return { success: false, error: 'Você já está inscrito neste campeonato' };
+      }
+      
+      // Get current inscription count to check if tournament is full
+      const { data: currentInscriptions, error: countError } = await supabase
+        .from('inscricoes')
+        .select('id')
+        .eq('campeonato_id', tournamentId);
+      
+      if (countError) {
+        console.error('Error counting inscriptions:', countError);
+        return { success: false, error: 'Erro ao verificar vagas disponíveis' };
+      }
+      
+      if (currentInscriptions && currentInscriptions.length >= 20) {
+        console.log('Tournament is full');
+        return { success: false, error: 'Campeonato lotado' };
+      }
       
       console.log('Inserting player registration with data:', {
         nome_completo: name,
@@ -178,15 +279,14 @@ export const TournamentProvider: React.FC<{ children: React.ReactNode }> = ({ ch
         campeonato_id: tournamentId
       });
       
+      // Insert the new registration
       const { data, error } = await supabase
         .from('inscricoes')
-        .insert([
-          {
-            nome_completo: name,
-            numero_whatsapp: formattedWhatsapp,
-            campeonato_id: tournamentId,
-          }
-        ])
+        .insert({
+          nome_completo: name,
+          numero_whatsapp: formattedWhatsapp,
+          campeonato_id: tournamentId,
+        })
         .select();
 
       if (error) {
@@ -195,7 +295,15 @@ export const TournamentProvider: React.FC<{ children: React.ReactNode }> = ({ ch
       }
       
       console.log('Registration successful:', data);
-      await fetchInscriptionsForTournament(tournamentId);
+      
+      // Update local state with the new inscription
+      if (data && data.length > 0) {
+        setInscriptions(prev => [...prev, data[0]]);
+      }
+      
+      // Also fetch all inscriptions to ensure counts are accurate
+      await fetchAllInscriptions();
+      
       return { success: true };
     } catch (error) {
       console.error('Error registering player:', error);
@@ -254,6 +362,8 @@ export const TournamentProvider: React.FC<{ children: React.ReactNode }> = ({ ch
     if (!isAdmin) return { success: false, error: 'Unauthorized' };
     
     try {
+      console.log(`Creating new edition for ${game}, current edition: ${currentEdition}`);
+      
       // First, set all existing tournaments for this game to 'encerrado'
       if (currentEdition > 0) {
         const { error: updateError } = await supabase
@@ -271,20 +381,31 @@ export const TournamentProvider: React.FC<{ children: React.ReactNode }> = ({ ch
       // Create a new tournament with incremented edition
       const { data, error } = await supabase
         .from('campeonatos')
-        .insert([
-          {
-            jogo: game,
-            edicao: currentEdition + 1,
-            status: 'ativo',
-            data_inicio: new Date().toISOString(),
-          }
-        ])
+        .insert({
+          jogo: game,
+          edicao: currentEdition + 1,
+          status: 'ativo',
+          data_inicio: new Date().toISOString(),
+        })
         .select();
 
-      if (error) throw error;
+      if (error) {
+        console.error('Error creating new tournament:', error);
+        return { success: false, error: error.message };
+      }
       
       console.log('New tournament created:', data);
-      await fetchTournaments();
+      
+      // Update local state directly instead of fetching again
+      if (data && data.length > 0) {
+        setTournaments(prev => [...prev, data[0]]);
+      }
+      
+      // Also fetch to make sure we have the latest data
+      setTimeout(() => {
+        fetchTournaments();
+      }, 500);
+      
       return { success: true };
     } catch (error) {
       console.error('Error creating new edition:', error);
@@ -342,6 +463,7 @@ export const TournamentProvider: React.FC<{ children: React.ReactNode }> = ({ ch
     dbError,
     fetchTournaments,
     fetchInscriptions,
+    fetchAllInscriptions,
     registerPlayer,
     resetTournament,
     deleteTournament,

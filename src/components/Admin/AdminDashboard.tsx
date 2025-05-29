@@ -10,7 +10,7 @@ const AdminDashboard: React.FC = () => {
     tournaments, 
     fetchTournaments, 
     fetchInscriptions, 
-    resetTournament, 
+    deleteTournament, 
     createNewEdition, 
     getInscriptionCount 
   } = useTournament();
@@ -38,22 +38,23 @@ const AdminDashboard: React.FC = () => {
     }
   };
 
-  const handleResetTournament = async (tournamentId: string) => {
-    if (!window.confirm('Tem certeza que deseja resetar este campeonato? Todas as inscrições serão removidas.')) {
+  const handleDeleteTournament = async (tournamentId: string) => {
+    if (!window.confirm('Tem certeza que deseja EXCLUIR este campeonato? Esta ação não pode ser desfeita.')) {
       return;
     }
 
     setLoading(true);
     try {
-      const { success, error } = await resetTournament(tournamentId);
+      // Use the deleteTournament function from the context instead of resetTournament
+      const { success, error } = await deleteTournament(tournamentId);
       if (success) {
-        toast.success('Campeonato resetado com sucesso');
+        toast.success('Campeonato excluído com sucesso');
         await fetchTournaments();
       } else {
-        toast.error(`Erro ao resetar campeonato: ${error}`);
+        toast.error(`Erro ao excluir campeonato: ${error}`);
       }
     } catch (error) {
-      toast.error('Erro ao resetar campeonato');
+      toast.error('Erro ao excluir campeonato');
     } finally {
       setLoading(false);
     }
@@ -208,9 +209,9 @@ const AdminDashboard: React.FC = () => {
                                   {tournament.status === 'ativo' && (
                                     <>
                                       <button
-                                        onClick={() => handleResetTournament(tournament.id)}
+                                        onClick={() => handleDeleteTournament(tournament.id)}
                                         className="bg-red-600 hover:bg-red-700 text-white p-2 rounded transition-colors"
-                                        title="Resetar campeonato"
+                                        title="Excluir campeonato"
                                         disabled={loading}
                                       >
                                         <Trash2 size={16} />
