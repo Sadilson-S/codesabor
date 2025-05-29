@@ -1,5 +1,6 @@
 import React from 'react';
-import { Gamepad2, ArrowDownCircle } from 'lucide-react';
+import { ArrowDownCircle } from 'lucide-react';
+import logoImage from '../data/images/code_sabor-removebg-preview.jpg';
 
 interface HeroSectionProps {
   scrollToMenu: () => void;
@@ -18,13 +19,13 @@ const HeroSection: React.FC<HeroSectionProps> = ({ scrollToMenu }) => {
       ></div>
       
       <div className="relative h-full flex flex-col items-center justify-center text-center text-white px-4">
-        <div className="flex items-center mb-4">
-          <Gamepad2 size={48} className="text-orange-400" />
-          <h1 className="text-4xl md:text-6xl font-bold ml-4">
-            Code & Sabor
-          </h1>
+        <div className="mb-4">
+          <img 
+            src={logoImage} 
+            alt="Code & Sabor Logo" 
+            className="h-40 md:h-48 object-contain"
+          />
         </div>
-        <p className="text-xl md:text-2xl mb-2 text-orange-300">mais rápido que a tua internet</p>
         
         <p className="max-w-2xl mx-auto text-lg md:text-xl mb-8 mt-6">
           Junte a melhor comida com os melhores jogos! 🎮 Peça seu lanche e venha se divertir com a gente!
