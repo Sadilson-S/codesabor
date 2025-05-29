@@ -114,6 +114,8 @@ const TournamentSection: React.FC = () => {
                       <h3 className="text-xl font-bold text-white mb-2">{tournament.jogo}</h3>
                       <p className="text-sm text-gray-400 mb-2">Edição {tournament.edicao}</p>
                       
+                      <p className="text-orange-400 font-bold mb-2">Inscrição 2.350 Kz</p>
+                      
                       {isFull ? (
                         <div className="flex items-center text-red-400 mb-3">
                           <AlertCircle size={16} className="mr-1" />
