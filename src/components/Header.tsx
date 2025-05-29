@@ -75,8 +75,8 @@ const Header: React.FC<HeaderProps> = ({ scrollToSection }) => {
           </nav>
         </div>
         
-        {/* Admin/User Button */}
-        <div>
+        {/* Admin/User Button - Only visible on desktop */}
+        <div className="hidden md:block">
           {user ? (
             <button
               onClick={signOut}
